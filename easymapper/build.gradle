@@ -1,0 +1,6 @@
+dependencies {
+	compile('org.apache.commons:commons-lang3:3.4')
+	compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.1.1')
+	compile('com.google.guava:guava:16.0.1')
+    compile('javax.persistence:persistence-api:1.0.2')
+}

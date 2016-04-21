@@ -1,0 +1,34 @@
+spring:
+  profiles.active: h2
+  main:
+    web-environment: false
+    banner-mode: 'off'
+mybatis:
+  config-location: mybatis-config.xml
+  type-aliases-package: org.easymapper.sample.domain
+  check-config-location: true
+logging.level.org.springframework: ERROR
+logging.level.org.easymapper: INFO
+logging.level.org.easymapper.sample: DEBUG
+
+---
+spring:
+  profiles: mysql
+  datasource:
+    test-on-borrow: true
+    validation-query: SELECT 1
+    driver-class-name: com.mysql.jdbc.Driver
+    jdbc-url: jdbc:mysql://localhost:3306/easymapper?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: password
+    type: com.zaxxer.hikari.HikariDataSource
+    initialize: false
+
+---
+spring:
+  profiles: h2
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test'
+    initialize: false
+

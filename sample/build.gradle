@@ -1,0 +1,18 @@
+apply plugin: 'spring-boot'
+
+dependencies {
+    compile('mysql:mysql-connector-java')
+    compile('com.zaxxer:HikariCP')
+    compile('org.flywaydb:flyway-core')
+    compile project(':easymapper')
+    testCompile('com.h2database:h2')
+    testCompile('org.assertj:assertj-core:2.4.1')
+    testCompile('org.springframework.boot:spring-boot-starter-web')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+test {
+    testLogging {
+        showStandardStreams = true
+    }
+}

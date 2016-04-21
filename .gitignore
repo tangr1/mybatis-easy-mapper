@@ -1,0 +1,57 @@
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+!gradle-wrapper.jar
+*.war
+*.ear
+
+# Virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# Patch files
+*.patch
+
+# Vim temp file
+*.swp
+
+# Gradle files
+build
+.gradle
+
+# Operating system files
+*.DS_Store
+Thumbs.db
+*.sw?
+.#*
+*#
+*~
+*.sublime-*
+
+# Build artifacts
+.gradle/
+build/
+target/
+bin/
+dependency-reduced-pom.xml
+
+# Eclipse project files
+.classpath
+.project
+.settings/
+
+# IntelliJ IDEA files
+*.iml
+*.ipr
+*.iws
+*.ids
+*.idea
+
+# Log files
+logs/
+
+# Redis dump files
+dump.rdb

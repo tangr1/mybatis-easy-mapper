@@ -1,1 +1,1 @@
-# mybatis-easy-mapper
+一款好用的MyBatis通用Mapper
