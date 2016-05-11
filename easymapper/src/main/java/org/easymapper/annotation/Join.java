@@ -9,7 +9,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Join {
     Class<?> entity();
+
     String field();
+
     String joinField();
+
     String foreignJoinField();
 }

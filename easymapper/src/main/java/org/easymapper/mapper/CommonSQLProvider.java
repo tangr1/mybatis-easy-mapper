@@ -3,10 +3,10 @@ package org.easymapper.mapper;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.ibatis.jdbc.SQL;
 import org.easymapper.annotation.CreatedAt;
 import org.easymapper.annotation.Join;
 import org.easymapper.annotation.ProviderConfig;
-import org.apache.ibatis.jdbc.SQL;
 import org.easymapper.annotation.UpdatedAt;
 
 import javax.persistence.Table;
@@ -23,15 +23,6 @@ public class CommonSQLProvider {
     protected List<String> innerJoins = new ArrayList<>();
     protected String defaultOrderColumn = "id";
     protected String defaultOrderDirection = "desc";
-
-    private String getTableName(Class<?> clazz) {
-        Table table = clazz.getAnnotation(Table.class);
-        if (table == null) {
-            return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, clazz.getSimpleName());
-        } else {
-            return table.name();
-        }
-    }
 
     public CommonSQLProvider() {
         Class<?> clazz = this.getClass().getAnnotation(ProviderConfig.class).entity();
@@ -72,6 +63,15 @@ public class CommonSQLProvider {
         readColumns = tableName + ".id, " + tableName + "." + Joiner.on(", " + tableName + ".").join(mappings.keySet());
         if (!joinColumns.isEmpty()) {
             readColumns += ", " + Joiner.on(", ").join(joinColumns);
+        }
+    }
+
+    private String getTableName(Class<?> clazz) {
+        Table table = clazz.getAnnotation(Table.class);
+        if (table == null) {
+            return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, clazz.getSimpleName());
+        } else {
+            return table.name();
         }
     }
 

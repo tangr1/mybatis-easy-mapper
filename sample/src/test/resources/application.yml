@@ -9,7 +9,7 @@ mybatis:
   check-config-location: true
 logging.level.org.springframework: ERROR
 logging.level.org.easymapper: INFO
-logging.level.org.easymapper.sample: DEBUG
+logging.level.org.easymapper.sample: INFO
 
 ---
 spring:
