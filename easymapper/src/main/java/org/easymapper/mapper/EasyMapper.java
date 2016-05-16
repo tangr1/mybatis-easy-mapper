@@ -2,6 +2,7 @@ package org.easymapper.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.session.RowBounds;
+import org.easymapper.mapper.internal.SQLProvider;
 
 import java.util.List;
 
@@ -22,11 +23,11 @@ public interface EasyMapper<T> {
     @SelectProvider(type = SQLProvider.class, method = "count")
     int count(T condition);
 
-    @SelectProvider(type = SQLProvider.class, method = "selectByExample")
-    List<T> selectAllByExample(Example example);
+    @SelectProvider(type = SQLProvider.class, method = "selectByCriteria")
+    List<T> selectAllByCriteria(@Param("criteria") Criteria criteria);
 
-    @SelectProvider(type = SQLProvider.class, method = "selectByExample")
-    List<T> selectByExample(Example example, RowBounds rowBounds);
+    @SelectProvider(type = SQLProvider.class, method = "selectByCriteria")
+    List<T> selectByCriteria(@Param("criteria") Criteria criteria, RowBounds rowBounds);
 
     @UpdateProvider(type = SQLProvider.class, method = "updateByPrimaryKey")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)
@@ -36,15 +37,15 @@ public interface EasyMapper<T> {
     @Options(flushCache = Options.FlushCachePolicy.TRUE)
     int update(@Param("record") T record, @Param("condition") T condition);
 
-    @UpdateProvider(type = SQLProvider.class, method = "updateByExample")
+    @UpdateProvider(type = SQLProvider.class, method = "updateByCriteria")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)
-    int updateByExample(@Param("record") T record, @Param("example") Example example);
+    int updateByCriteria(@Param("record") T record, @Param("criteria") Criteria criteria);
 
     @DeleteProvider(type = SQLProvider.class, method = "delete")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)
     int delete(T record);
 
-    @DeleteProvider(type = SQLProvider.class, method = "deleteByExample")
+    @DeleteProvider(type = SQLProvider.class, method = "deleteByCriteria")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)
-    int deleteByExample(Example example);
+    int deleteByCriteria(@Param("criteria") Criteria criteria);
 }

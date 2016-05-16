@@ -1,7 +1,7 @@
 package org.easymapper.sample.mapper;
 
 import org.apache.ibatis.session.RowBounds;
-import org.easymapper.mapper.Example;
+import org.easymapper.mapper.Criteria;
 import org.easymapper.sample.TestApplication;
 import org.easymapper.sample.domain.Company;
 import org.easymapper.sample.domain.Product;
@@ -24,8 +24,6 @@ public class BaseTest {
     protected CompanyMapper companyMapper;
     @Autowired
     protected ProductMapper productMapper;
-
-    protected RowBounds rowBounds = new RowBounds(0, 100);
 
     public Company getCompany() {
         Company company = new Company();
@@ -68,13 +66,16 @@ public class BaseTest {
         assertThat(productMapper.select(product, new RowBounds(0, 1))).hasSize(1);
         assertThat(productMapper.select(product, new RowBounds(0, 2))).hasSize(2);
         assertThat(productMapper.select(product, new RowBounds(1, 2))).hasSize(1);
-        Example example = new Example(Product.class);
-        example.createCriteria()
-                .andEqualTo("companyId", company.getId())
-                .andEqualTo("id", product1.getId());
-        assertThat(productMapper.selectAllByExample(example)).hasSize(1);
-        assertThat(productMapper.selectByExample(example, new RowBounds(0, 1))).hasSize(1);
-        assertThat(productMapper.selectByExample(example, new RowBounds(0, 0))).hasSize(0);
+        Criteria criteria = new Criteria.Builder(Product.class)
+                .equalTo("companyId", company.getId())
+                .equalTo("id", product1.getId())
+                .orderBy("id", Criteria.Direction.ASC)
+                .or()
+                .equalTo("name", product.getName())
+                .build();
+        assertThat(productMapper.selectAllByCriteria(criteria)).hasSize(1);
+        assertThat(productMapper.selectByCriteria(criteria, new RowBounds(0, 1))).hasSize(1);
+        assertThat(productMapper.selectByCriteria(criteria, new RowBounds(0, 0))).hasSize(0);
         product1.setName("new name");
         assertThat(productMapper.updateByPrimaryKey(product1)).isEqualTo(1);
         assertThat(product1.getName()).isEqualTo("new name");
@@ -83,9 +84,9 @@ public class BaseTest {
         Product condition = new Product();
         condition.setCompanyId(company.getId());
         assertThat(productMapper.update(product, condition)).isEqualTo(2);
-        assertThat(productMapper.updateByExample(product, example)).isEqualTo(1);
+        assertThat(productMapper.updateByCriteria(product, criteria)).isEqualTo(1);
         assertThat(companyMapper.delete(new Company())).isEqualTo(1);
-        assertThat(productMapper.deleteByExample(example)).isEqualTo(1);
+        assertThat(productMapper.deleteByCriteria(criteria)).isEqualTo(1);
         assertThat(productMapper.delete(new Product())).isEqualTo(1);
     }
 }

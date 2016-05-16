@@ -1,17 +1,17 @@
 package org.easymapper.sample.domain;
 
-import org.easymapper.annotation.Join;
+import org.easymapper.annotation.Reference;
 
-import javax.persistence.Transient;
+import javax.persistence.OrderBy;
 
 public class Product extends ModifiableDomainObject {
 
     private Long companyId;
+    @OrderBy
     private String name;
     private String description;
     private Integer status;
-    @Transient
-    @Join(entity = Company.class, field = "name", joinField = "companyId", foreignJoinField = "id")
+    @Reference(referenceEntity = Company.class, referenceField = "name", localOn = "companyId", referenceOn = "id")
     private String companyName;
 
     public String getCompanyName() {
