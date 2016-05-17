@@ -11,8 +11,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,6 +66,13 @@ public class BaseTest {
         product = new Product();
         product.setCompanyId(company.getId());
         assertThat(productMapper.select(product, new RowBounds())).hasSize(2);
+        List<Sort.Order> orders = new ArrayList<Sort.Order>() {{
+            add(new Sort.Order(Sort.Direction.ASC, "id"));
+            add(new Sort.Order(Sort.Direction.DESC, "companyId"));
+        }};
+        Sort sort = new Sort(orders);
+        PageRequest pageRequest = new PageRequest(0, 1, sort);
+        assertThat(productMapper.selectPageable(product, pageRequest)).hasSize(1);
         assertThat(productMapper.count(product)).isEqualTo(2);
         assertThat(productMapper.select(product, new RowBounds(0, 1))).hasSize(1);
         assertThat(productMapper.select(product, new RowBounds(0, 2))).hasSize(2);
@@ -74,6 +85,7 @@ public class BaseTest {
                 .equalTo("name", product.getName())
                 .build();
         assertThat(productMapper.selectByCriteria(criteria, new RowBounds())).hasSize(1);
+        assertThat(productMapper.selectPageableByCriteria(criteria, pageRequest)).hasSize(1);
         assertThat(productMapper.countByCriteria(criteria)).isEqualTo(1);
         assertThat(productMapper.selectByCriteria(criteria, new RowBounds(0, 2))).hasSize(1);
         assertThat(productMapper.selectByCriteria(criteria, new RowBounds(0, 0))).hasSize(0);

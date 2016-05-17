@@ -18,11 +18,17 @@ public interface EasyMapper<T> {
     @SelectProvider(type = SQLProvider.class, method = "select")
     List<T> select(@Param("condition") T condition, RowBounds rowBounds);
 
+    @SelectProvider(type = SQLProvider.class, method = "select")
+    List<T> selectPageable(@Param("condition") T condition, @Param("pageable") Pageable pageable);
+
     @SelectProvider(type = SQLProvider.class, method = "count")
     int count(@Param("condition") T condition);
 
     @SelectProvider(type = SQLProvider.class, method = "selectByCriteria")
     List<T> selectByCriteria(@Param("criteria") Criteria criteria, RowBounds rowBounds);
+
+    @SelectProvider(type = SQLProvider.class, method = "selectByCriteria")
+    List<T> selectPageableByCriteria(@Param("criteria") Criteria criteria, @Param("pageable") Pageable pageable);
 
     @SelectProvider(type = SQLProvider.class, method = "countByCriteria")
     int countByCriteria(@Param("criteria") Criteria criteria);

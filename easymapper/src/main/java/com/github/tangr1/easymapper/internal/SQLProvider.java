@@ -9,6 +9,7 @@ import com.github.tangr1.easymapper.annotation.CreatedAt;
 import com.github.tangr1.easymapper.annotation.Reference;
 import com.github.tangr1.easymapper.annotation.UpdatedAt;
 import com.github.tangr1.easymapper.Criteria;
+import org.springframework.data.domain.Pageable;
 
 import javax.persistence.*;
 import java.lang.reflect.Field;
@@ -170,32 +171,50 @@ public class SQLProvider {
     public String select(Map<String, Object> params) {
         Object condition = params.get("condition");
         EntityTable entityTable = getEntityTable(condition.getClass());
-        return new SQL() {{
-            SELECT(entityTable.getSelectColumns());
-            FROM(entityTable.getName());
-            entityTable.getInnerJoins().forEach(this::INNER_JOIN);
-            applyWhere(this, entityTable, condition);
-            entityTable.getOrderBys().forEach(this::ORDER_BY);
-        }}.toString();
+        Pageable pageable = null;
+        if (params.containsKey("pageable")) {
+            pageable = (Pageable) params.get("pageable");
+        }
+        SQL sql = new SQL();
+        sql.SELECT(entityTable.getSelectColumns());
+        sql.FROM(entityTable.getName());
+        entityTable.getInnerJoins().forEach(sql::INNER_JOIN);
+        applyWhere(sql, entityTable, condition);
+        if (pageable == null) {
+            entityTable.getOrderBys().forEach(sql::ORDER_BY);
+            return sql.toString();
+        } else {
+            return applyPageable(sql, pageable);
+        }
     }
 
-    public String selectByCriteria(Criteria criteria) {
+    public String selectByCriteria(Map<String, Object> params) {
+        Criteria criteria = (Criteria) params.get("criteria");
+        Pageable pageable = null;
+        if (params.containsKey("pageable")) {
+            pageable = (Pageable) params.get("pageable");
+        }
         EntityTable entityTable = getEntityTable(criteria.getEntityClass());
-        return new SQL() {{
-            SELECT(entityTable.getSelectColumns());
-            FROM(entityTable.getName());
-            entityTable.getInnerJoins().forEach(this::INNER_JOIN);
-            WHERE(criteria.getClause());
-            StringJoiner stringJoiner = new StringJoiner(", ");
-            if (criteria.getOrderBys() != null && !criteria.getOrderBys().isEmpty()) {
-                criteria.getOrderBys().forEach(stringJoiner::add);
-            } else if (entityTable.getOrderBys() != null && !entityTable.getOrderBys().isEmpty()) {
-                entityTable.getOrderBys().forEach(stringJoiner::add);
-            }
-            if (stringJoiner.length() > 0) {
-                ORDER_BY(stringJoiner.toString());
-            }
-        }}.toString();
+        SQL sql = new SQL();
+        sql.SELECT(entityTable.getSelectColumns());
+        sql.FROM(entityTable.getName());
+        entityTable.getInnerJoins().forEach(sql::INNER_JOIN);
+        sql.WHERE(criteria.getClause());
+        StringJoiner stringJoiner = new StringJoiner(", ");
+        if (criteria.getOrderBys() != null && !criteria.getOrderBys().isEmpty()) {
+            criteria.getOrderBys().forEach(stringJoiner::add);
+        } else if (entityTable.getOrderBys() != null && !entityTable.getOrderBys().isEmpty()) {
+            entityTable.getOrderBys().forEach(stringJoiner::add);
+        }
+        if (stringJoiner.length() > 0) {
+            sql.ORDER_BY(stringJoiner.toString());
+        }
+        if (pageable == null) {
+            entityTable.getOrderBys().forEach(sql::ORDER_BY);
+            return sql.toString();
+        } else {
+            return applyPageable(sql, pageable);
+        }
     }
 
     public String countByCriteria(Criteria criteria) {
@@ -219,7 +238,7 @@ public class SQLProvider {
                     .forEach(column -> SET(column.getColumn() + " = #{record." + column.getProperty() + "}"));
             entityTable.getEntityClassPKColumns().forEach(column -> {
                 notNullKeyProperty(column.getProperty(), metaObject.getValue(column.getProperty()));
-                WHERE(column.getColumn() + "=#{record." + column.getProperty() + "}");
+                WHERE(column.getColumn() + " = #{record." + column.getProperty() + "}");
             });
         }}.toString();
     }
@@ -287,9 +306,19 @@ public class SQLProvider {
                 );
     }
 
+    protected String applyPageable(SQL sql, Pageable pageable) {
+        StringJoiner stringJoiner = new StringJoiner(", ");
+        pageable.getSort().forEach(order -> stringJoiner.add(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE
+                , order.getProperty()) + " " + order.getDirection().name()));
+        if (stringJoiner.length() > 0) {
+            sql.ORDER_BY(stringJoiner.toString());
+        }
+        return sql.toString() + " LIMIT " + pageable.getOffset() + ", " + pageable.getPageSize();
+    }
+
     protected void notNullKeyProperty(String property, Object value) {
         if (value == null || (value instanceof String && ((String) value).length() == 0)) {
-            throw new NullPointerException("主键属性" + property + "不能为空!");
+            throw new NullPointerException("Primary key " + property + " cannot be empty!");
         }
     }
 }
