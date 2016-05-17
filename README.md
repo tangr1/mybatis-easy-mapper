@@ -1,5 +1,5 @@
 ## MyBatis Easy Mapper
-[![Build Status](https://travis-ci.org/tangr1/springboot-mca.svg?branch=master)](https://travis-ci.org/tangr1/springboot-mca)
+[![Build Status](https://travis-ci.org/tangr1/mybatis-easy-mapper.svg?branch=master)](https://travis-ci.org/tangr1/mybatis-easy-mapper)
 
 ### 介绍
 MyBatis在写mapper的时候，需要大量手写的XML，个人一直不太喜欢，因为毕竟大家是写Java而不是写XML，其维护性和扩展性都比较差。MyBatis官方有两种办法去解决这个问题：
@@ -14,7 +14,7 @@ MyBatis在写mapper的时候，需要大量手写的XML，个人一直不太喜�
 * 加上多表Join支持
 * 大幅度简化，原来的版本有几种使用方式，这里只支持一种最常见的。原来支持多种数据库，这里也只支持MySQL
 * 重构部分代码，让整体显得更加简洁
-* 使用最新的[MyBatis Spring Boot Start](https://github.com/mybatis/spring-boot-starter)，简化依赖，彻底告别XML配置
+* 使用最新的[MyBatis Spring Boot Starter](https://github.com/mybatis/spring-boot-starter)，简化依赖，彻底告别XML配置
 
 ### 安装
 
