@@ -21,7 +21,7 @@ MyBatis在写mapper的时候，需要大量手写的XML，个人一直不太喜�
 Easy Mapper需要依赖Java 8，如果是maven，则加入下面依赖到pom.xml里：
 ```
 <dependency>
-    <groupId>org.easymapper</groupId>
+    <groupId>com.github.tangr1</groupId>
     <artifactId>easymapper</artifactId>
     <!-- 建议使用最新版本,最新版本请从项目首页查找 -->
     <version>0.1.0</version>
@@ -29,7 +29,7 @@ Easy Mapper需要依赖Java 8，如果是maven，则加入下面依赖到pom.xml
 ```
 如果是gradle，则加入下面依赖到build.gradle里：
 ```
-compile('org.easymapper:easymapper:0.1.0')
+compile('com.github.tangr1:easymapper:0.1.0')
 ```
 
 ### 使用
