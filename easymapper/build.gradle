@@ -1,3 +1,73 @@
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+group = "com.github.tangr1"
+archivesBaseName = "easymapper"
+version = "0.1.0"
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'MyBatis Easy Mapper'
+                description 'MyBatis Easy Mapper'
+                url 'https://github.com/tangr1/mybatis-easy-mapper'
+                inceptionYear '2016'
+
+                scm {
+                    url 'https://github.com/tangr1/mybatis-easy-mapper'
+                    connection 'scm:https://tangr1@github.com/tangr1/mybatis-easy-maaper.git'
+                    developerConnection 'scm:git://github.com/tangr1/mybatis-easy-mapper.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'tangr1'
+                        name 'Tang Rui'
+                        email 'tangrui9105@sina.com'
+                    }
+                }
+            }
+        }
+    }
+}
+
 dependencies {
     compile('org.apache.commons:commons-lang3:3.4')
     compile('commons-beanutils:commons-beanutils:1.9.2')

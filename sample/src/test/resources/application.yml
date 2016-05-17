@@ -5,11 +5,10 @@ spring:
     banner-mode: 'off'
 mybatis:
   config-location: mybatis-config.xml
-  type-aliases-package: org.easymapper.sample.domain
+  type-aliases-package: com.github.tangr1.sample.domain
   check-config-location: true
 logging.level.org.springframework: ERROR
-logging.level.org.easymapper: INFO
-logging.level.org.easymapper.sample: INFO
+logging.level.com.github.tangr1.easymapper: INFO
 
 ---
 spring:
