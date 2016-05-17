@@ -1,4 +1,4 @@
-package com.github.tangr1.easymapper.mapper.internal;
+package com.github.tangr1.easymapper.internal;
 
 import com.google.common.base.CaseFormat;
 import org.apache.commons.lang3.reflect.FieldUtils;
@@ -8,7 +8,7 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 import com.github.tangr1.easymapper.annotation.CreatedAt;
 import com.github.tangr1.easymapper.annotation.Reference;
 import com.github.tangr1.easymapper.annotation.UpdatedAt;
-import com.github.tangr1.easymapper.mapper.Criteria;
+import com.github.tangr1.easymapper.Criteria;
 
 import javax.persistence.*;
 import java.lang.reflect.Field;

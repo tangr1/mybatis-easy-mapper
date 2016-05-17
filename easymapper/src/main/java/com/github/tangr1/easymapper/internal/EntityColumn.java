@@ -1,4 +1,4 @@
-package com.github.tangr1.easymapper.mapper.internal;
+package com.github.tangr1.easymapper.internal;
 
 public class EntityColumn {
     private String property;

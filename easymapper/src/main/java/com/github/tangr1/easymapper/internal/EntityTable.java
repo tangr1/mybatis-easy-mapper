@@ -1,4 +1,4 @@
-package com.github.tangr1.easymapper.mapper.internal;
+package com.github.tangr1.easymapper.internal;
 
 import java.util.List;
 import java.util.Set;

@@ -1,8 +1,8 @@
-package com.github.tangr1.easymapper.mapper;
+package com.github.tangr1.easymapper;
 
-import com.github.tangr1.easymapper.mapper.internal.EntityColumn;
-import com.github.tangr1.easymapper.mapper.internal.EntityTable;
-import com.github.tangr1.easymapper.mapper.internal.SQLProvider;
+import com.github.tangr1.easymapper.internal.EntityColumn;
+import com.github.tangr1.easymapper.internal.EntityTable;
+import com.github.tangr1.easymapper.internal.SQLProvider;
 
 import java.util.*;
 

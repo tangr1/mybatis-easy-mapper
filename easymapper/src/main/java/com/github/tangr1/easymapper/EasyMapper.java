@@ -1,8 +1,8 @@
-package com.github.tangr1.easymapper.mapper;
+package com.github.tangr1.easymapper;
 
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.session.RowBounds;
-import com.github.tangr1.easymapper.mapper.internal.SQLProvider;
+import com.github.tangr1.easymapper.internal.SQLProvider;
 
 import java.util.List;
 

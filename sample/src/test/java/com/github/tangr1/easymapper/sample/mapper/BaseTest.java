@@ -2,7 +2,7 @@ package com.github.tangr1.easymapper.sample.mapper;
 
 import com.github.tangr1.easymapper.sample.TestApplication;
 import org.apache.ibatis.session.RowBounds;
-import com.github.tangr1.easymapper.mapper.Criteria;
+import com.github.tangr1.easymapper.Criteria;
 import com.github.tangr1.easymapper.sample.domain.Company;
 import com.github.tangr1.easymapper.sample.domain.Product;
 import org.junit.After;
