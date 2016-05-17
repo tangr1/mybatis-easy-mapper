@@ -61,7 +61,7 @@ public class BaseTest {
         assertThat(product.getCompanyId()).isEqualTo(company.getId());
         product = new Product();
         product.setCompanyId(company.getId());
-        assertThat(productMapper.selectAll(product)).hasSize(2);
+        assertThat(productMapper.select(product, new RowBounds())).hasSize(2);
         assertThat(productMapper.count(product)).isEqualTo(2);
         assertThat(productMapper.select(product, new RowBounds(0, 1))).hasSize(1);
         assertThat(productMapper.select(product, new RowBounds(0, 2))).hasSize(2);
@@ -73,8 +73,9 @@ public class BaseTest {
                 .or()
                 .equalTo("name", product.getName())
                 .build();
-        assertThat(productMapper.selectAllByCriteria(criteria)).hasSize(1);
-        assertThat(productMapper.selectByCriteria(criteria, new RowBounds(0, 1))).hasSize(1);
+        assertThat(productMapper.selectByCriteria(criteria, new RowBounds())).hasSize(1);
+        assertThat(productMapper.countByCriteria(criteria)).isEqualTo(1);
+        assertThat(productMapper.selectByCriteria(criteria, new RowBounds(0, 2))).hasSize(1);
         assertThat(productMapper.selectByCriteria(criteria, new RowBounds(0, 0))).hasSize(0);
         product1.setName("new name");
         assertThat(productMapper.updateByPrimaryKey(product1)).isEqualTo(1);

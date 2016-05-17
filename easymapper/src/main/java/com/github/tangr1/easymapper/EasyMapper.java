@@ -15,19 +15,16 @@ public interface EasyMapper<T> {
     T selectOne(T condition);
 
     @SelectProvider(type = SQLProvider.class, method = "select")
-    List<T> selectAll(T condition);
-
-    @SelectProvider(type = SQLProvider.class, method = "select")
     List<T> select(T condition, RowBounds rowBounds);
 
     @SelectProvider(type = SQLProvider.class, method = "count")
     int count(T condition);
 
     @SelectProvider(type = SQLProvider.class, method = "selectByCriteria")
-    List<T> selectAllByCriteria(@Param("criteria") Criteria criteria);
-
-    @SelectProvider(type = SQLProvider.class, method = "selectByCriteria")
     List<T> selectByCriteria(@Param("criteria") Criteria criteria, RowBounds rowBounds);
+
+    @SelectProvider(type = SQLProvider.class, method = "countByCriteria")
+    int countByCriteria(@Param("criteria") Criteria criteria);
 
     @UpdateProvider(type = SQLProvider.class, method = "updateByPrimaryKey")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)

@@ -149,7 +149,7 @@ public class SQLProvider {
     public String count(Object record) {
         EntityTable entityTable = getEntityTable(record.getClass());
         return new SQL() {{
-            SELECT("SELECT COUNT(1)");
+            SELECT("COUNT(1)");
             FROM(entityTable.getName());
             applyWhereFromRecord(this, entityTable, record);
         }}.toString();
@@ -162,7 +162,7 @@ public class SQLProvider {
             FROM(entityTable.getName());
             entityTable.getInnerJoins().forEach(this::INNER_JOIN);
             applyWhereFromRecord(this, entityTable, record);
-        }}.toString() + " limit 1";
+        }}.toString() + " LIMIT 1";
     }
 
     public String select(Object record) {
@@ -192,6 +192,16 @@ public class SQLProvider {
             if (stringJoiner.length() > 0) {
                 ORDER_BY(stringJoiner.toString());
             }
+        }}.toString();
+    }
+
+    public String countByCriteria(Criteria criteria) {
+        EntityTable entityTable = getEntityTable(criteria.getEntityClass());
+        return new SQL() {{
+            SELECT("COUNT(1)");
+            FROM(entityTable.getName());
+            entityTable.getInnerJoins().forEach(this::INNER_JOIN);
+            WHERE(criteria.getClause());
         }}.toString();
     }
 
@@ -252,7 +262,7 @@ public class SQLProvider {
                 .filter(column -> !column.isId() && !column.isCreatedAt() && metaObject.getValue(column.getProperty()) != null)
                 .forEach(column -> {
                     if (column.isUpdatedAt()) {
-                        sql.SET(column.getColumn() + " = now()");
+                        sql.SET(column.getColumn() + " = NOW()");
                     } else {
                         sql.SET(column.getColumn() + " = #{record." + column.getProperty() + "}");
                     }
