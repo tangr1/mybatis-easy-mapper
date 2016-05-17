@@ -146,32 +146,35 @@ public class SQLProvider {
         }}.toString();
     }
 
-    public String count(Object record) {
-        EntityTable entityTable = getEntityTable(record.getClass());
+    public String count(Map<String, Object> params) {
+        Object condition = params.get("condition");
+        EntityTable entityTable = getEntityTable(condition.getClass());
         return new SQL() {{
             SELECT("COUNT(1)");
             FROM(entityTable.getName());
-            applyWhereFromRecord(this, entityTable, record);
+            applyWhere(this, entityTable, condition);
         }}.toString();
     }
 
-    public String selectOne(Object record) {
-        EntityTable entityTable = getEntityTable(record.getClass());
+    public String selectOne(Map<String, Object> params) {
+        Object condition = params.get("condition");
+        EntityTable entityTable = getEntityTable(condition.getClass());
         return new SQL() {{
             SELECT(entityTable.getSelectColumns());
             FROM(entityTable.getName());
             entityTable.getInnerJoins().forEach(this::INNER_JOIN);
-            applyWhereFromRecord(this, entityTable, record);
+            applyWhere(this, entityTable, condition);
         }}.toString() + " LIMIT 1";
     }
 
-    public String select(Object record) {
-        EntityTable entityTable = getEntityTable(record.getClass());
+    public String select(Map<String, Object> params) {
+        Object condition = params.get("condition");
+        EntityTable entityTable = getEntityTable(condition.getClass());
         return new SQL() {{
             SELECT(entityTable.getSelectColumns());
             FROM(entityTable.getName());
             entityTable.getInnerJoins().forEach(this::INNER_JOIN);
-            applyWhereFromRecord(this, entityTable, record);
+            applyWhere(this, entityTable, condition);
             entityTable.getOrderBys().forEach(this::ORDER_BY);
         }}.toString();
     }
@@ -205,17 +208,18 @@ public class SQLProvider {
         }}.toString();
     }
 
-    public String updateByPrimaryKey(Object record) {
+    public String updateByPrimaryKey(Map<String, Object> params) {
+        Object record = params.get("record");
         EntityTable entityTable = getEntityTable(record.getClass());
         MetaObject metaObject = SystemMetaObject.forObject(record);
         return new SQL() {{
             UPDATE(entityTable.getName());
             entityTable.getEntityClassColumns().stream()
                     .filter(column -> !column.isId() && metaObject.getValue(column.getProperty()) != null)
-                    .forEach(column -> SET(column.getColumn() + " = #{" + column.getProperty() + "}"));
+                    .forEach(column -> SET(column.getColumn() + " = #{record." + column.getProperty() + "}"));
             entityTable.getEntityClassPKColumns().forEach(column -> {
                 notNullKeyProperty(column.getProperty(), metaObject.getValue(column.getProperty()));
-                WHERE(column.getColumn() + "=#{" + column.getProperty() + "}");
+                WHERE(column.getColumn() + "=#{record." + column.getProperty() + "}");
             });
         }}.toString();
     }
@@ -226,7 +230,7 @@ public class SQLProvider {
         return new SQL() {{
             UPDATE(entityTable.getName());
             applyUpdate(this, entityTable, metaObject);
-            applyWhereFromRecord(this, entityTable, condition, "condition.");
+            applyWhere(this, entityTable, condition);
         }}.toString();
     }
 
@@ -241,11 +245,12 @@ public class SQLProvider {
         }}.toString();
     }
 
-    public String delete(Object record) {
-        EntityTable entityTable = getEntityTable(record.getClass());
+    public String delete(Map<String, Object> params) {
+        Object condition = params.get("condition");
+        EntityTable entityTable = getEntityTable(condition.getClass());
         return new SQL() {{
             DELETE_FROM(entityTable.getName());
-            applyWhereFromRecord(this, entityTable, record);
+            applyWhere(this, entityTable, condition);
         }}.toString();
     }
 
@@ -269,11 +274,7 @@ public class SQLProvider {
                 });
     }
 
-    protected void applyWhereFromRecord(SQL sql, EntityTable entityTable, Object condition) {
-        applyWhereFromRecord(sql, entityTable, condition, "");
-    }
-
-    protected void applyWhereFromRecord(SQL sql, EntityTable entityTable, Object condition, String prefix) {
+    protected void applyWhere(SQL sql, EntityTable entityTable, Object condition) {
         MetaObject metaObject = SystemMetaObject.forObject(condition);
         entityTable.getEntityClassColumns().stream()
                 .filter(column -> {
@@ -282,7 +283,7 @@ public class SQLProvider {
                             && !(column.getJavaType().equals(String.class) && ((String) value).length() == 0);
                 })
                 .forEach(column -> sql.WHERE(entityTable.getName() +
-                        "." + column.getColumn() + " = #{" + prefix + column.getProperty() + "}")
+                        "." + column.getColumn() + " = #{condition." + column.getProperty() + "}")
                 );
     }
 

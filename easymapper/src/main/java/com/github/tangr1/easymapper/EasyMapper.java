@@ -3,6 +3,7 @@ package com.github.tangr1.easymapper;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.session.RowBounds;
 import com.github.tangr1.easymapper.internal.SQLProvider;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -12,13 +13,13 @@ public interface EasyMapper<T> {
     int insert(T record);
 
     @SelectProvider(type = SQLProvider.class, method = "selectOne")
-    T selectOne(T condition);
+    T selectOne(@Param("condition") T condition);
 
     @SelectProvider(type = SQLProvider.class, method = "select")
-    List<T> select(T condition, RowBounds rowBounds);
+    List<T> select(@Param("condition") T condition, RowBounds rowBounds);
 
     @SelectProvider(type = SQLProvider.class, method = "count")
-    int count(T condition);
+    int count(@Param("condition") T condition);
 
     @SelectProvider(type = SQLProvider.class, method = "selectByCriteria")
     List<T> selectByCriteria(@Param("criteria") Criteria criteria, RowBounds rowBounds);
@@ -28,7 +29,7 @@ public interface EasyMapper<T> {
 
     @UpdateProvider(type = SQLProvider.class, method = "updateByPrimaryKey")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)
-    int updateByPrimaryKey(T record);
+    int updateByPrimaryKey(@Param("record") T record);
 
     @UpdateProvider(type = SQLProvider.class, method = "update")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)
@@ -40,7 +41,7 @@ public interface EasyMapper<T> {
 
     @DeleteProvider(type = SQLProvider.class, method = "delete")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)
-    int delete(T record);
+    int delete(@Param("condition") T condition);
 
     @DeleteProvider(type = SQLProvider.class, method = "deleteByCriteria")
     @Options(flushCache = Options.FlushCachePolicy.TRUE)
