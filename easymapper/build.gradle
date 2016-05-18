@@ -1,5 +1,22 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        //Needed only for SNAPSHOT versions
+        //maven { url 'http://oss.sonatype.org/content/repositories/snapshots/' }
+    }
+    dependencies {
+        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
+    }
+}
+
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'io.codearte.nexus-staging'
+
+nexusStaging {
+    packageGroup = 'com.github.tangr1'
+    stagingProfileId = '166d26a118e655'
+}
 
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
@@ -15,32 +32,35 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
+/*
 signing {
     sign configurations.archives
 }
+*/
 
-group = "com.github.tangr1"
-archivesBaseName = "easymapper"
-version = "0.1.0"
+group = 'com.github.tangr1'
+archivesBaseName = 'easymapper'
+version = '0.1.0'
 
+/*
 uploadArchives {
     repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+            repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
                 authentication(userName: ossrhUsername, password: ossrhPassword)
             }
 
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
                 authentication(userName: ossrhUsername, password: ossrhPassword)
             }
 
             pom.project {
                 name 'MyBatis Easy Mapper'
                 description 'MyBatis Easy Mapper'
+                packaging 'jar'
                 url 'https://github.com/tangr1/mybatis-easy-mapper'
-                inceptionYear '2016'
 
                 scm {
                     url 'https://github.com/tangr1/mybatis-easy-mapper'
@@ -52,7 +72,6 @@ uploadArchives {
                     license {
                         name 'The Apache Software License, Version 2.0'
                         url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
                     }
                 }
 
@@ -67,6 +86,7 @@ uploadArchives {
         }
     }
 }
+*/
 
 dependencies {
     compile('org.apache.commons:commons-lang3:3.4')
